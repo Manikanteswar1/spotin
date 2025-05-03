@@ -6,14 +6,16 @@ import seedMongoDB from "../db/mongodb-seed";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { storage } from './mongo-storage';
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Session setup will be added after MongoDB connection
-
+// Request logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -32,11 +34,9 @@ app.use((req, res, next) => {
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
-
       if (logLine.length > 80) {
         logLine = logLine.slice(0, 79) + "…";
       }
-
       log(logLine);
     }
   });
@@ -46,30 +46,24 @@ app.use((req, res, next) => {
 
 (async () => {
   try {
-    // Connect to MongoDB
-    await connectDB();
-    
-    // Seed the database with initial data
+    // Connect to MongoDB (Atlas or fallback)
+    const connection = await connectDB();
+
+    // Seed the database
     await seedMongoDB();
-    
-    // Setup graceful shutdown
-    process.on('SIGTERM', async () => {
-      console.log('SIGTERM received, shutting down gracefully');
-      await closeDatabase();
-      process.exit(0);
-    });
-    
-    process.on('SIGINT', async () => {
-      console.log('SIGINT received, shutting down gracefully');
-      await closeDatabase();
-      process.exit(0);
-    });
-    
-    // Create a memory store as a fallback
-    const MemoryStore = session.MemoryStore;
-    const sessionStore = new MemoryStore();
-    
-    // Configure and add session middleware to app
+
+    // Use MongoStore if connected to MongoDB Atlas
+    const isAtlas = !!process.env.MONGODB_URI;
+
+    const sessionStore = isAtlas
+    ? MongoStore.create({
+        client: mongoose.connection.getClient(),
+        collectionName: 'sessions'
+        // dbName: mongoose.connection.db?.databaseName  ← remove this
+      })
+    : new session.MemoryStore();
+  
+
     app.use(session({
       secret: process.env.SESSION_SECRET || 'coffee_app_secret',
       resave: false,
@@ -77,44 +71,48 @@ app.use((req, res, next) => {
       store: sessionStore,
       cookie: {
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 24 * 14 // 14 days
+        maxAge: 1000 * 60 * 60 * 24 * 14, // 14 days
       }
     }));
-    
-    // Assign session store to storage
+
     storage.sessionStore = sessionStore;
-    
-    // Set up routes
+
+    // Graceful shutdown handlers
+    process.on('SIGTERM', async () => {
+      console.log('SIGTERM received, shutting down gracefully');
+      await closeDatabase();
+      process.exit(0);
+    });
+
+    process.on('SIGINT', async () => {
+      console.log('SIGINT received, shutting down gracefully');
+      await closeDatabase();
+      process.exit(0);
+    });
+
+    // Register routes
     const server = await registerRoutes(app);
 
+    // Error handling middleware
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
       const message = err.message || "Internal Server Error";
-
       res.status(status).json({ message });
       console.error(err);
     });
 
-    // importantly only setup vite in development and after
-    // setting up all the other routes so the catch-all route
-    // doesn't interfere with the other routes
+    // Vite or static serving
     if (app.get("env") === "development") {
       await setupVite(app, server);
     } else {
       serveStatic(app);
     }
 
-    // ALWAYS serve the app on port 5000
-    // this serves both the API and the client.
-    // It is the only port that is not firewalled.
     const port = 5000;
-    server.listen({
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    }, () => {
-      log(`serving on port ${port}`);
+    server.listen(port, 'localhost', () => {
+      log(`serving on http://localhost:${port}`);
     });
+
   } catch (error) {
     console.error('Server initialization error:', error);
     process.exit(1);
