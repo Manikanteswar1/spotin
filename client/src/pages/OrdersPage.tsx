@@ -9,7 +9,7 @@ export default function OrdersPage() {
   const [, setLocation] = useLocation();
   
   // Fetch user orders
-  const { data: orders, isLoading } = useQuery<(Order & { items: OrderItem[] })[]>({
+  const { data: orders, isLoading } = useQuery<(Order & { items: OrderItemType[] })[]>({
     queryKey: ['/api/orders'],
   });
   
