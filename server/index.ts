@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import connectDB, { closeDatabase } from "../db/mongodb";
+import seedMongoDB from "../db/mongodb-seed";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
@@ -47,6 +48,9 @@ app.use((req, res, next) => {
   try {
     // Connect to MongoDB
     await connectDB();
+    
+    // Seed the database with initial data
+    await seedMongoDB();
     
     // Setup graceful shutdown
     process.on('SIGTERM', async () => {

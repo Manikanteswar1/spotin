@@ -19,8 +19,8 @@ async function seedMongoDB() {
   try {
     console.log("🌱 Starting MongoDB database seeding...");
     
-    // Connect to MongoDB
-    await connectDB();
+    // Use existing mongoose connection, don't try to connect again
+    // Make sure mongoose is connected before running this function
     
     // First, check if any existing data
     const adminCount = await Admin.countDocuments();
@@ -129,14 +129,18 @@ async function seedMongoDB() {
   } catch (err) {
     console.error("❌ MongoDB seed failed:", err);
   } finally {
-    // Don't close the connection if it's being used by the application
-    if (process.env.NODE_ENV !== 'production') {
+    // Never disconnect in the seed function when called from the server
+    // Only disconnect if run directly as a script with SEED_DIRECTLY
+    if (process.env.SEED_DIRECTLY === 'true') {
       await mongoose.disconnect();
     }
   }
 }
 
-// Run the seed function
-seedMongoDB().catch(console.error);
+// Only run seed directly if this file is executed directly
+// When imported in server/index.ts, this won't auto-execute
+if (process.env.SEED_DIRECTLY === 'true') {
+  seedMongoDB().catch(console.error);
+}
 
 export default seedMongoDB;
