@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import jwt from "jsonwebtoken";
-import { storage } from "./storage";
-import { verifyOtpSchema, adminLoginSchema } from "@shared/schema";
+import { storage } from "./mongo-storage";
+import { verifyOtpSchema, adminLoginSchema } from "@shared/models";
 
 // Secret for JWT (should be in .env in a real app)
 const JWT_SECRET = process.env.JWT_SECRET || "sip-and-savor-secret";
@@ -10,12 +10,12 @@ const JWT_EXPIRES_IN = "7d";
 const ADMIN_JWT_EXPIRES_IN = "1d";
 
 // Generate JWT for a user
-export function generateUserToken(userId: number) {
+export function generateUserToken(userId: string) {
   return jwt.sign({ userId, type: "user" }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 }
 
 // Generate JWT for an admin
-export function generateAdminToken(adminId: number) {
+export function generateAdminToken(adminId: string) {
   return jwt.sign({ adminId, type: "admin" }, JWT_SECRET, { expiresIn: ADMIN_JWT_EXPIRES_IN });
 }
 
@@ -36,7 +36,7 @@ export function authenticateUser(req: Request, res: Response, next: NextFunction
   const token = authHeader.split(" ")[1];
   
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number, type: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string, type: string };
     
     if (decoded.type !== "user") {
       return res.status(403).json({ message: "Forbidden: Invalid token type" });
@@ -61,7 +61,7 @@ export function authenticateAdmin(req: Request, res: Response, next: NextFunctio
   const token = authHeader.split(" ")[1];
   
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { adminId: number, type: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as { adminId: string, type: string };
     
     if (decoded.type !== "admin") {
       return res.status(403).json({ message: "Forbidden: Invalid token type" });
