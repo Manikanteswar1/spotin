@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiRequest } from "@/lib/queryClient";
 import { nameSchema, phoneSchema, emailSchema, addressSchema } from "@/lib/utils";
@@ -156,6 +156,13 @@ export default function RegisterPage() {
             <Button type="submit" className="w-full">
               Complete Registration
             </Button>
+
+            <div className="text-center mt-4 text-sm text-gray-600">
+              Already have an account?{" "}
+              <Link to="/login" className="text-primary hover:underline">
+                Login here
+              </Link>
+            </div>
           </form>
         </Form>
       </div>

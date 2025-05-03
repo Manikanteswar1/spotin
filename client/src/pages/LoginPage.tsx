@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { phoneSchema, otpSchema } from "@/lib/utils";
 import {
@@ -113,6 +113,13 @@ export default function LoginPage() {
               <Button type="submit" className="w-full">
                 Send OTP
               </Button>
+              
+              <div className="text-center mt-4 text-sm text-gray-600">
+                Don't have an account?{" "}
+                <Link to="/" className="text-primary hover:underline">
+                  Register here
+                </Link>
+              </div>
             </form>
           </Form>
         ) : (
