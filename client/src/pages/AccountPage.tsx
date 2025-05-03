@@ -59,12 +59,13 @@ export default function AccountPage() {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-semibold text-gray-800">My Addresses</h2>
-          <button 
-            className="text-primary flex items-center"
+          <Button 
+            variant="ghost" 
+            className="text-primary flex items-center p-2"
             onClick={() => setShowAddAddressModal(true)}
           >
-            <Plus size={16} className="mr-1" /> Add
-          </button>
+            <Plus size={16} className="mr-1" /> Add New
+          </Button>
         </div>
         
         {isLoading ? (
@@ -91,11 +92,12 @@ export default function AccountPage() {
           <div className="bg-white p-4 rounded-xl shadow-sm mb-3 text-center">
             <p className="text-gray-500">No addresses found</p>
             <Button 
-              variant="link" 
-              className="text-primary"
+              size="sm"
+              variant="outline" 
+              className="mt-2 border-primary text-primary"
               onClick={() => setShowAddAddressModal(true)}
             >
-              Add New Address
+              Add Your First Address
             </Button>
           </div>
         )}

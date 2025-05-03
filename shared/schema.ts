@@ -131,10 +131,7 @@ export const insertUserSchema = createInsertSchema(users, {
 export type UserInsert = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
-export const insertAddressSchema = createInsertSchema(addresses, {
-  label: (schema) => schema.min(2, "Label must be at least 2 characters"),
-  address: (schema) => schema.min(5, "Address must be at least 5 characters"),
-});
+export const insertAddressSchema = createInsertSchema(addresses);
 export type AddressInsert = z.infer<typeof insertAddressSchema>;
 export type Address = typeof addresses.$inferSelect;
 
