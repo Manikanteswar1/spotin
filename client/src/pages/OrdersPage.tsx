@@ -43,27 +43,56 @@ export default function OrdersPage() {
     setLocation("/");
   };
   
+  const handleRefresh = () => {
+    refetch();
+    toast({
+      title: "Refreshing orders",
+      description: "Getting your latest orders..."
+    });
+  };
+
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">My Orders</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold text-gray-800">My Orders</h1>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={handleRefresh}
+          disabled={isFetching}
+          className="flex items-center gap-1"
+        >
+          <RefreshCcw size={16} className={isFetching ? "animate-spin" : ""} />
+          <span className="hidden sm:inline">Refresh</span>
+        </Button>
+      </div>
       
-      {isLoading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse bg-white p-4 rounded-xl mb-3 shadow-sm">
-              <div className="flex justify-between items-center mb-3">
-                <div>
-                  <div className="h-3 bg-gray-200 rounded w-20 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-32"></div>
-                </div>
-                <div className="h-6 bg-gray-200 rounded w-24"></div>
-              </div>
-              <div className="flex items-center justify-between border-t border-gray-100 pt-3">
-                <div className="h-3 bg-gray-200 rounded w-28"></div>
-                <div className="h-4 bg-gray-200 rounded w-20"></div>
-              </div>
+      {isLoading || isFetching ? (
+        <div>
+          {isFetching && !isLoading && (
+            <div className="bg-blue-50 text-blue-800 px-4 py-2 rounded-lg mb-4 flex items-center">
+              <RefreshCcw size={16} className="animate-spin mr-2" />
+              <span>Refreshing your orders...</span>
             </div>
-          ))}
+          )}
+          
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse bg-white p-4 rounded-xl mb-3 shadow-sm">
+                <div className="flex justify-between items-center mb-3">
+                  <div>
+                    <div className="h-3 bg-gray-200 rounded w-20 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-32"></div>
+                  </div>
+                  <div className="h-6 bg-gray-200 rounded w-24"></div>
+                </div>
+                <div className="flex items-center justify-between border-t border-gray-100 pt-3">
+                  <div className="h-3 bg-gray-200 rounded w-28"></div>
+                  <div className="h-4 bg-gray-200 rounded w-20"></div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       ) : orders && orders.length > 0 ? (
         <div id="orders-list">

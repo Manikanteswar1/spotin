@@ -10,12 +10,14 @@ import { useLocation } from "wouter";
 import { ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import OrderSuccessModal from "@/components/modals/OrderSuccessModal";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function CartPage() {
   const { items, subtotal, deliveryFee, total, clearCart } = useCart();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [showOrderSuccess, setShowOrderSuccess] = useState(false);
   const [newOrderId, setNewOrderId] = useState<number | null>(null);
   
@@ -58,7 +60,11 @@ export default function CartPage() {
       setShowOrderSuccess(true);
       
       // Invalidate orders with user ID in query key
-      queryClient.invalidateQueries({ queryKey: ['/api/orders', user?.id] });
+      if (user) {
+        queryClient.invalidateQueries({ queryKey: ['/api/orders', user.id] });
+      } else {
+        queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
+      }
     },
     onError: (error) => {
       console.error("Error placing order:", error);
