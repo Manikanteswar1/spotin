@@ -35,6 +35,7 @@ async function seedMongoDB() {
       });
       await admin.save();
       console.log("✅ Created admin user");
+      console.log("   Admin credentials -> Username: admin, Password: admin123");
     }
     
     // Check if categories exist
