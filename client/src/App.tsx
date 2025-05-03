@@ -34,7 +34,7 @@ function ProtectedRoutes() {
   }
 
   return (
-    <div className="pb-24 bg-background min-h-screen max-w-lg mx-auto">
+    <div className="pb-safe bg-background min-h-screen max-w-lg mx-auto">
       <Switch>
         <Route path="/" component={CafePage} />
         <Route path="/cart" component={CartPage} />

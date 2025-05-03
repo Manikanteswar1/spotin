@@ -92,6 +92,8 @@
 @layer utilities {
   .bottom-nav {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+    z-index: 50;
   }
 
   .drink-card:active {
@@ -105,5 +107,42 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  
+  /* Mobile touch optimizations */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  
+  body {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  
+  /* Better spacing for mobile screens */
+  @media (max-width: 360px) {
+    .xs-text-sm {
+      font-size: 0.875rem;
+    }
+    
+    .xs-p-2 {
+      padding: 0.5rem;
+    }
+    
+    .xs-gap-1 {
+      gap: 0.25rem;
+    }
+  }
+  
+  /* Prevent content from being hidden behind bottom nav */
+  .pb-safe {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0.5rem));
+  }
+  
+  /* Improve touch target sizes */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }

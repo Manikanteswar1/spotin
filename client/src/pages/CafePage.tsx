@@ -72,14 +72,14 @@ export default function CafePage() {
   };
   
   return (
-    <div className="p-4">
+    <div className="p-4 xs-p-2">
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Sip & Savor</h1>
+          <h1 className="text-2xl font-bold text-gray-800 xs-text-sm">Sip & Savor</h1>
           <p className="text-gray-600 text-sm">What would you like to drink today?</p>
         </div>
         <div className="relative">
-          <div className="h-10 w-10 bg-primary rounded-full flex items-center justify-center text-white font-medium cursor-pointer">
+          <div className="h-10 w-10 bg-primary rounded-full flex items-center justify-center text-white font-medium cursor-pointer touch-target">
             {user ? getInitials(user.name) : "G"}
           </div>
         </div>
@@ -101,7 +101,7 @@ export default function CafePage() {
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold text-gray-800">Categories</h2>
           </div>
-          <div className="flex space-x-3 overflow-x-auto pb-2 no-scrollbar">
+          <div className="flex space-x-2 md:space-x-3 overflow-x-auto pb-2 no-scrollbar -webkit-overflow-scrolling-touch">
             <CategoryPill 
               category={{ id: 0, name: "All", slug: "all" }}
               isActive={activeCategory === null}
@@ -125,7 +125,7 @@ export default function CafePage() {
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold text-gray-800">Popular Drinks</h2>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 xs-gap-1 md:gap-4">
             {popularDrinks.map((drink) => (
               <DrinkCard key={drink.id} drink={drink} />
             ))}
@@ -145,7 +145,7 @@ export default function CafePage() {
         </div>
         
         {isLoading ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 xs-gap-1 md:gap-4">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="animate-pulse">
                 <div className="bg-gray-200 h-32 rounded-t-xl"></div>
@@ -160,7 +160,7 @@ export default function CafePage() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 xs-gap-1 md:gap-4">
             {displayedDrinks().map((drink) => (
               <DrinkCard key={drink.id} drink={drink} />
             ))}
