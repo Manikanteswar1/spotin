@@ -46,7 +46,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     (total, item) => {
       // Ensure price is a valid number before calculation
       const itemPrice = typeof item.price === 'number' ? item.price : 0;
-      return total + itemPrice * item.quantity;
+      // Use integer math to avoid floating point errors
+      const itemTotal = Math.round(itemPrice * 100 * item.quantity) / 100;
+      return total + itemTotal;
     },
     0
   );

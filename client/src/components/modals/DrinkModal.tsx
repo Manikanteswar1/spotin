@@ -33,7 +33,8 @@ export default function DrinkModal({ drink, isOpen, onClose }: DrinkModalProps) 
   
   // Extract the price value here so it's available for both the cart and total calculation
   const priceValue = drink.price ? parseFloat(drink.price.toString()) : 0;
-  const totalPrice = priceValue * quantity;
+  // Calculate the total price using integer multiplication to avoid floating point errors
+  const totalPrice = Math.round(priceValue * 100 * quantity) / 100;
   
   const handleAddToCart = () => {
     // Use the sanitized price value

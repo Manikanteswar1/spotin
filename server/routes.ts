@@ -160,19 +160,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post(`${apiPrefix}/addresses`, authenticateUser, validateRequest(schema.insertAddressSchema, async (req, res, data) => {
+  app.post(`${apiPrefix}/addresses`, authenticateUser, async (req, res) => {
     try {
       const userId = (req as any).userId;
+      console.log("Received address data:", req.body);
+      
+      // Validate the data ourselves
+      if (!req.body.label || typeof req.body.label !== 'string') {
+        return res.status(400).json({ message: "Label is required and must be a string" });
+      }
+      
+      if (!req.body.address || typeof req.body.address !== 'string') {
+        return res.status(400).json({ message: "Address is required and must be a string" });
+      }
+      
+      const isDefault = req.body.default === true;
+      
       const address = await storage.createAddress({
-        ...data,
-        userId
+        userId,
+        label: req.body.label,
+        address: req.body.address,
+        default: isDefault
       });
+      
       res.status(201).json(address);
     } catch (error) {
       console.error("Error creating address:", error);
       res.status(500).json({ message: "Failed to create address" });
     }
-  }));
+  });
 
   app.put(`${apiPrefix}/addresses/:id`, authenticateUser, async (req, res) => {
     try {
