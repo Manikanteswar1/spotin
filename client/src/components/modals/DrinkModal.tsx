@@ -32,10 +32,11 @@ export default function DrinkModal({ drink, isOpen, onClose }: DrinkModalProps) 
   };
   
   const handleAddToCart = () => {
+    // Use the sanitized price value
     addItem({
       drinkId: drink.id,
       name: drink.name,
-      price: parseFloat(drink.price.toString()),
+      price: priceValue,
       quantity,
       image: drink.image
     });
