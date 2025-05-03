@@ -74,10 +74,14 @@ export default function AdminDashboardPage() {
   
   // Count orders by status
   const pendingCount = orders?.filter(order => order.status === "pending").length || 0;
+  const processingCount = orders?.filter(order => order.status === "processing").length || 0;
+  const onTheWayCount = orders?.filter(order => order.status === "on-the-way").length || 0;
+  const deliveredCount = orders?.filter(order => order.status === "delivered").length || 0;
+  const cancelledCount = orders?.filter(order => order.status === "cancelled").length || 0;
   const totalCount = orders?.length || 0;
   
   return (
-    <div className="p-4 pb-6">
+    <div className="p-4 pb-6 max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
         <button 
@@ -88,7 +92,7 @@ export default function AdminDashboardPage() {
         </button>
       </div>
       
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
         <div className="bg-white p-4 rounded-xl shadow-sm">
           <h3 className="text-gray-600 text-sm mb-1">Total Orders</h3>
           <p className="text-2xl font-bold text-gray-800">{totalCount}</p>
@@ -96,6 +100,22 @@ export default function AdminDashboardPage() {
         <div className="bg-white p-4 rounded-xl shadow-sm">
           <h3 className="text-gray-600 text-sm mb-1">Pending</h3>
           <p className="text-2xl font-bold text-yellow-500">{pendingCount}</p>
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow-sm">
+          <h3 className="text-gray-600 text-sm mb-1">Processing</h3>
+          <p className="text-2xl font-bold text-blue-500">{processingCount}</p>
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow-sm">
+          <h3 className="text-gray-600 text-sm mb-1">On The Way</h3>
+          <p className="text-2xl font-bold text-orange-500">{onTheWayCount}</p>
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow-sm">
+          <h3 className="text-gray-600 text-sm mb-1">Delivered</h3>
+          <p className="text-2xl font-bold text-green-500">{deliveredCount}</p>
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow-sm">
+          <h3 className="text-gray-600 text-sm mb-1">Cancelled</h3>
+          <p className="text-2xl font-bold text-red-500">{cancelledCount}</p>
         </div>
       </div>
       
@@ -126,11 +146,14 @@ export default function AdminDashboardPage() {
           <div id="admin-orders-list">
             {orders.map((order) => (
               <div key={order.id} className="order-item bg-white p-4 rounded-xl mb-3 shadow-sm">
-                <div className="flex justify-between items-center mb-2">
+                <div className="flex justify-between items-start mb-2">
                   <div>
                     <span className="text-xs text-gray-500">Order #{order.id}</span>
                     <p className="font-medium text-gray-800">
                       {order.user.name} • {formatCurrency(parseFloat(order.total.toString()))}
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      <span className="font-medium">Contact:</span> {order.user.phone}
                     </p>
                   </div>
                   <div>
@@ -156,7 +179,7 @@ export default function AdminDashboardPage() {
                   <p>
                     {order.items.length} {order.items.length === 1 ? 'item' : 'items'} • {formatDate(order.createdAt)}
                   </p>
-                  <p className="text-xs mt-1">{order.deliveryAddress}</p>
+                  <p className="text-xs mt-1 flex-wrap">{order.deliveryAddress}</p>
                 </div>
               </div>
             ))}

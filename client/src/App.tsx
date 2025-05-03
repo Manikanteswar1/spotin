@@ -34,7 +34,7 @@ function ProtectedRoutes() {
   }
 
   return (
-    <div className="pb-20 bg-background min-h-screen">
+    <div className="pb-24 bg-background min-h-screen max-w-lg mx-auto">
       <Switch>
         <Route path="/" component={CafePage} />
         <Route path="/cart" component={CartPage} />
@@ -78,7 +78,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
-          <div className="max-w-md mx-auto bg-background min-h-screen">
+          <div className="mx-auto bg-background min-h-screen">
             <AuthRoutes />
           </div>
           <Toaster />
