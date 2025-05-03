@@ -1,17 +1,43 @@
 import { useQuery } from "@tanstack/react-query";
 import { Order, OrderItem as OrderItemType } from "@shared/schema";
 import OrderItem from "@/components/OrderItem";
-import { FileText } from "lucide-react";
+import { FileText, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 export default function OrdersPage() {
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
+  const { toast } = useToast();
   
-  // Fetch user orders
-  const { data: orders, isLoading } = useQuery<(Order & { items: OrderItemType[] })[]>({
-    queryKey: ['/api/orders'],
+  // Fetch user orders with user ID in the query key to ensure proper caching per user
+  const { 
+    data: orders, 
+    isLoading, 
+    isError, 
+    error, 
+    refetch,
+    isFetching 
+  } = useQuery<(Order & { items: OrderItemType[] })[]>({
+    queryKey: ['/api/orders', user?.id],
+    enabled: !!user, // Only run the query when user is available
+    staleTime: 1000 * 60, // Consider data stale after 1 minute
+    refetchOnWindowFocus: true, // Refetch when window gains focus
   });
+  
+  // Show error notification if orders fetch fails
+  useEffect(() => {
+    if (isError && error) {
+      toast({
+        title: "Failed to load orders",
+        description: error.message || "Something went wrong. Please try refreshing.",
+        variant: "destructive"
+      });
+    }
+  }, [isError, error, toast]);
   
   const handleStartOrdering = () => {
     setLocation("/");

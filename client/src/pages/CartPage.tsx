@@ -57,8 +57,8 @@ export default function CartPage() {
       setNewOrderId(data.id);
       setShowOrderSuccess(true);
       
-      // Invalidate orders
-      queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
+      // Invalidate orders with user ID in query key
+      queryClient.invalidateQueries({ queryKey: ['/api/orders', user?.id] });
     },
     onError: (error) => {
       console.error("Error placing order:", error);
