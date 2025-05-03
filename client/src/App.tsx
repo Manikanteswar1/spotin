@@ -65,8 +65,8 @@ function AuthRoutes() {
   
   return (
     <Switch>
-      <Route path="/" component={LoginPage} />
-      <Route path="/register" component={RegisterPage} />
+      <Route path="/" component={RegisterPage} />
+      <Route path="/login" component={LoginPage} />
       <Route path="/admin/login" component={AdminLoginPage} />
       <Route component={NotFound} />
     </Switch>
