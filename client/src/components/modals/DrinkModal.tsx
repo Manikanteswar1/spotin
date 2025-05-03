@@ -31,6 +31,10 @@ export default function DrinkModal({ drink, isOpen, onClose }: DrinkModalProps) 
     setQuantity(quantity + 1);
   };
   
+  // Extract the price value here so it's available for both the cart and total calculation
+  const priceValue = drink.price ? parseFloat(drink.price.toString()) : 0;
+  const totalPrice = priceValue * quantity;
+  
   const handleAddToCart = () => {
     // Use the sanitized price value
     addItem({
@@ -42,9 +46,6 @@ export default function DrinkModal({ drink, isOpen, onClose }: DrinkModalProps) 
     });
     onClose();
   };
-  
-  const priceValue = drink.price ? parseFloat(drink.price.toString()) : 0;
-  const totalPrice = priceValue * quantity;
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

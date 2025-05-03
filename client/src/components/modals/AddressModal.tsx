@@ -32,11 +32,11 @@ interface AddressModalProps {
   existingAddress?: Address;
 }
 
+// Client-side schema that matches the server's expectations
 const formSchema = z.object({
   label: z.string().min(2, "Label must be at least 2 characters"),
   address: z.string().min(5, "Address must be at least 5 characters"),
   default: z.boolean().default(false),
-  userId: z.number().optional(), // Will be filled on the server
 });
 
 type FormValues = z.infer<typeof formSchema>;

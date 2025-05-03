@@ -41,9 +41,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
-  // Calculate totals
+  // Calculate totals with safe price values
   const subtotal = items.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => {
+      // Ensure price is a valid number before calculation
+      const itemPrice = typeof item.price === 'number' ? item.price : 0;
+      return total + itemPrice * item.quantity;
+    },
     0
   );
   
