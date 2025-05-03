@@ -42,7 +42,8 @@ export default function DrinkModal({ drink, isOpen, onClose }: DrinkModalProps) 
     onClose();
   };
   
-  const totalPrice = parseFloat(drink.price.toString()) * quantity;
+  const priceValue = drink.price ? parseFloat(drink.price.toString()) : 0;
+  const totalPrice = priceValue * quantity;
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -67,7 +68,7 @@ export default function DrinkModal({ drink, isOpen, onClose }: DrinkModalProps) 
               {drink.name}
             </DialogTitle>
             <DialogDescription className="text-primary font-semibold text-lg">
-              {formatCurrency(parseFloat(drink.price.toString()))}
+              {formatCurrency(drink.price ? parseFloat(drink.price.toString()) : 0)}
             </DialogDescription>
           </DialogHeader>
           

@@ -46,7 +46,7 @@ export default function CafePage() {
   
   // Fetch search results if query is provided
   const { data: searchResults, isLoading: isLoadingSearch } = useQuery<DrinkWithCategory[]>({
-    queryKey: ['/api/drinks/search', debouncedQuery],
+    queryKey: [`/api/drinks/search?q=${encodeURIComponent(debouncedQuery)}`],
     enabled: debouncedQuery.length > 0,
   });
   
